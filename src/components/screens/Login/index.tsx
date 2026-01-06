@@ -35,9 +35,8 @@ export function Login() {
 
   const onSubmit = async (data: any) => {
     setIsLoading(true);
-    try {
-      console.log(data);
 
+    try {
       const response = !isRegister
         ? await getLogin(data)
         : await getRegister(data);
@@ -157,7 +156,13 @@ export function Login() {
         )}
         <Button
           onPress={handleSubmit(onSubmit)}
-          title={isRegister ? "Enviar" : "Entrar"}
+          title={
+            isLoading
+              ? "Carregando..."
+              : isRegister && !isLoading
+                ? "Enviar"
+                : "Entrar"
+          }
           buttonStyle={{
             backgroundColor: "#841584",
             borderRadius: 8,
