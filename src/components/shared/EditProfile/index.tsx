@@ -1,63 +1,37 @@
-import { useAuthContext } from "@/context/AuthContext";
-import { HTTPResponseStatus } from "@/interfaces";
-import { getLogin, getRegister } from "@/services/posts";
-import { Picker } from "@react-native-picker/picker";
-import { NavigationProp, useNavigation } from "@react-navigation/native";
+import { Text, TextInput, View, StyleSheet } from "react-native";
 import React, { useState } from "react";
-import { Controller, useForm } from "react-hook-form";
-import { StyleSheet, Text, TextInput, View } from "react-native";
 import { Button } from "react-native-elements";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { Controller, Form, useForm } from "react-hook-form";
+import useProfiles from "@/hooks/useProfile";
+import { HTTPResponseStatus } from "@/interfaces";
+import { NavigationProp, useNavigation } from "@react-navigation/native";
+import { useGenericContext } from "@/context/GenericContext";
 
-export function Login() {
+export function EditProfile({ route }) {
   const navigation = useNavigation<NavigationProp<any>>();
-  const [isRegister, setIsRegister] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [erroMessage, setErrorMessage] = useState<string>("");
-
-  const { handleWriteSession } = useAuthContext();
-
   const {
     control,
     handleSubmit,
-    setValue,
-    reset,
     formState: { errors },
   } = useForm({
-    defaultValues: {
-      username: "",
-      password: "",
-      email: "",
-      permissionType: 0,
-    },
+    defaultValues: route.params.user,
   });
 
+  const {  
+    editUser 
+  } =
+  useGenericContext();
 
   const onSubmit = async (data: any) => {
     setIsLoading(true);
-
+    const response = await editUser(data.id, data);
+    setIsLoading(false);
+    if(response?.status === HTTPResponseStatus.OK) {
+      navigation.navigate('ProfilesScreen', { users: data.user });
+    }
     try {
-      const response = !isRegister
-        ? await getLogin(data)
-        : await getRegister(data);
-
-      if (response.status === HTTPResponseStatus.CREATED && isRegister) {
-        setIsLoading(false);
-        setIsRegister(false);
-      }
-
-      if (response.status === HTTPResponseStatus.OK) {
-        navigation.navigate("Home");
-        setIsLoading(false);
-        handleWriteSession(response.data);
-        setErrorMessage("");
-        reset()
-      }
-
-      if (response.status === HTTPResponseStatus.NOT_FOUND) {
-        setErrorMessage(response?.data?.message);
-        throw Error();
-      }
     } catch (error) {
       setIsLoading(false);
       console.log(error);
@@ -65,9 +39,8 @@ export function Login() {
   };
 
   return (
-    <>
-      <SafeAreaView style={styles.container} accessible={true}>
-        <Text style={styles.title}>{isRegister ? "Cadastrar" : "Entrar"}</Text>
+    <SafeAreaView style={styles.container} accessible={true}>
+        <Text style={styles.title}>{"Editar"}</Text>
         <View style={styles.viewInput}>
           <Text nativeID="formLabel-username">Nome</Text>
           <Controller
@@ -129,42 +102,9 @@ export function Login() {
             )}
           />
         </View>
-        {isRegister && (
-          <View style={styles.viewInput}>
-            <Controller
-              name="permissionType"
-              rules={{
-                required: "Selecione um tipo de permissão",
-              }}
-              control={control}
-              render={({ field }) => (
-                <Picker
-                  {...field}
-                  accessibilityLabel="select-permissionType"
-                  accessibilityLabelledBy="formLabel-permissionType"
-                  selectedValue={field.value}
-                  style={styles.input}
-                  onValueChange={(itemValue) => {
-                    field.onChange(itemValue);
-                    setValue("permissionType", itemValue);
-                  }}
-                >
-                  <Picker.Item label="Aluno" value={0} />
-                  <Picker.Item label="Professor" value={1} />
-                </Picker>
-              )}
-            />
-          </View>
-        )}
         <Button
           onPress={handleSubmit(onSubmit)}
-          title={
-            isLoading
-              ? "Carregando..."
-              : isRegister && !isLoading
-                ? "Enviar"
-                : "Entrar"
-          }
+          title={isLoading ? "Carregando..." : "Enviar"}
           buttonStyle={{
             backgroundColor: "#841584",
             borderRadius: 8,
@@ -172,18 +112,7 @@ export function Login() {
             padding: 8,
           }}
         />
-        <Text
-          style={{
-            fontSize: 16,
-            color: "#333333",
-            textAlign: "center",
-          }}
-        >
-          Não possue uma conta?{" "}
-          <Text onPress={() => setIsRegister(true)}>Cadastre-se</Text>
-        </Text>
-      </SafeAreaView>
-    </>
+    </SafeAreaView>
   );
 }
 

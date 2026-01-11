@@ -1,3 +1,19 @@
+export interface IUser {
+  id?: number;
+  username?: string;
+  email?: string;
+  permission_type?: number;
+  password?: string;
+}
+
+export interface IUserUpdate {
+  id?: number;
+  username?: string;
+  email?: string;
+  password?: string;
+  permission_type?: number;
+}
+
 export interface IPost {
   id?: number;
   title: string;

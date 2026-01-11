@@ -72,7 +72,7 @@ export const searchPost = async (search?: string) => {
 
 export const postNewPost = async (data: any) => {
   try {
-    const response = await fetch(` https://postai-latest.onrender.com/posts`, {
+    const response = await fetch(`https://postai-latest.onrender.com/posts`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -81,10 +81,11 @@ export const postNewPost = async (data: any) => {
       body: JSON.stringify(data),
     });
 
+    console.log(response.json())
+
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
-    return response;
   } catch (error) {
     throw error;
   }
@@ -107,7 +108,8 @@ export const putPost = async (postId: any, data: any) => {
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
-    return response;
+    const newData = await response.json();
+    return newData;
   } catch (error) {
     throw error;
   }

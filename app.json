@@ -8,14 +8,18 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "android": {
+      "googleServicesFile": "./google-services .json",
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE"
       },
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.blogaulas"
     },
     "ios": {
-      "bundleIdentifier": "com.firebase.blog"
+      "supportsTablet": true,
+      "googleServicesFile": "",
+      "bundleIdentifier": "com.blogaulas"
     },
     "web": {
       "output": "static"
@@ -32,7 +36,10 @@
             "backgroundColor": "#000000"
           }
         }
-      ]
+      ],
+      "@react-native-firebase/app",
+      "@react-native-firebase/auth",
+      "@react-native-firebase/crashlytics"
     ],
     "experiments": {
       "typedRoutes": true,

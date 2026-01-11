@@ -1,12 +1,34 @@
+import { useNavigation } from "@react-navigation/native";
 import React from "react";
 import { Text, StyleSheet, ScrollView, View } from "react-native";
+import { Icon, Button } from "react-native-elements";
 
 export function SinglePost({ route }) {
+  const navigation = useNavigation<any>();
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>{route.params?.item?.title ?? ""}</Text>
       <ScrollView>
         <Text style={styles.content}>{route.params?.item?.content ?? ""}</Text>
+        {route.params.userId && (
+          <Button
+            icon={<Icon name="add-circle-outline" color="#ffffff" />}
+            onPress={() => {
+              navigation.navigate("FormPost", {
+                post: route.params.item,
+                userId: route.params.userId,
+              });
+            }}
+            buttonStyle={{
+              backgroundColor: "#841584",
+              borderRadius: 8,
+              gap: 8,
+              padding: 4,
+            }}
+            title="Editar"
+          />
+        )}
       </ScrollView>
     </View>
   );

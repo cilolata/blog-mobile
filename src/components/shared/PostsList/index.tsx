@@ -1,56 +1,38 @@
-import { IPost } from "@/interfaces";
-import { getAllPosts, searchPost } from "@/services";
-import { useNavigation } from "@react-navigation/native";
-import React, { useEffect, useState } from "react";
+import { useGenericContext } from "@/context/GenericContext";
+import usePosts from "@/hooks/usePosts";
+import {
+  NavigationProp,
+  useNavigation,
+} from "@react-navigation/native";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   View,
   Text,
   StyleSheet,
   FlatList,
   ActivityIndicator,
+  RefreshControl,
 } from "react-native";
 import { Icon, Button, Card, Input } from "react-native-elements";
 
-export function Posts() {
-  const [loading, setLoading] = useState(false);
-  const [posts, setPosts] = useState<IPost[]>([]);
-  const [page, setPage] = useState(1);
-  const [hasMore, setHasMore] = useState(true);
-  const [value, setValue] = React.useState<string | undefined>("");
+export function PostList() {
+  const [refresh, setRefresh] = React.useState<any>();
+  const navigation = useNavigation<NavigationProp<any>>();
+  const {
+    posts,
+    loading,
+    page,
+    hasMore,
+    loadingMorePosts,
+    updateSearch,
+    value,
+  } = useGenericContext();
 
-  const navigation = useNavigation<any>();
-
-  const loadingMore = async (value: number) => {
-    setLoading(true);
-    const { data, status, error } = await getAllPosts({ page: value });
-    setPage((prev) => prev + 1);
-    if (data.posts && status === 200) {
-      setLoading(false);
-      setPosts([...posts, ...data.posts]);
-    }
-
-    if (error || status !== 200 || data.posts.length === 0) {
-      setLoading(false);
-      setHasMore(false);
-    }
-  };
-
-  useEffect(() => {
-    const firstFetch = async () => {
-      await loadingMore(page);
-    };
-    firstFetch();
-  }, []);
-
-  const updateSearch = async (search?: string) => {
-    setValue(search);
-    try {
-      const response = await searchPost(search);
-      setPosts(response.posts);
-    } catch {
-      console.error("Error updating search");
-    }
-  };
+  const handleRelaod = useCallback(async () => {
+    setRefresh(true)
+    await loadingMorePosts(page);
+    setRefresh(false)
+  }, [])
 
   return (
     <View style={styles.container}>
@@ -66,24 +48,29 @@ export function Posts() {
         value={value}
       />
       <FlatList
+      refreshControl={
+        <RefreshControl refreshing={refresh} onRefresh={handleRelaod} />
+      }
         data={posts}
         numColumns={1}
         ItemSeparatorComponent={() => <View style={{ height: 24 }} />}
-        keyExtractor={(item) => (item?.id ? item?.id?.toString() : "")}
+        keyExtractor={(item, index) =>
+          item?.id ? `${item.id}-${item.title}-${index}` : ""
+        }
         onEndReachedThreshold={0.5}
         onEndReached={async () => {
           if (hasMore) {
-            await loadingMore(page);
+            await loadingMorePosts(page);
           }
         }}
         ListFooterComponent={
-          loading ? (
+          loading && !refresh ? (
             <ActivityIndicator style={{ marginVertical: 32 }} size="large" />
           ) : null
         }
-        renderItem={({ item }) => (
-          <View key={item.id} style={styles.cards}>
-            <Card.Title>{item.title.toUpperCase()}</Card.Title>
+        renderItem={({ item, index }) => (
+          <View key={`${item.id}-${item.title}-${index}`} style={styles.cards}>
+            <Card.Title>{item.title?.toUpperCase()}</Card.Title>
             <Text style={{ paddingVertical: 4 }}>{item.description}</Text>
             <View>
               <Text style={{ fontWeight: "bold" }}>

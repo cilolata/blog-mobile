@@ -4,20 +4,12 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 interface AuthContextData {
   handleWriteSession: (session: { user: any }) => void;
   isTeacher: boolean;
-  sessionData: () => Promise<{
-    username: string | null;
-    userId: string | null;
-  }>;
   clearSession: () => void;
 }
 
 const defaultAuthContextData: AuthContextData = {
   handleWriteSession: () => {},
   isTeacher: false,
-  sessionData: async () => ({
-    username: null,
-    userId: null,
-  }),
   clearSession: async () => {
     await AsyncStorage.removeItem("username");
     await AsyncStorage.removeItem("userId");
@@ -31,6 +23,7 @@ const AuthContext = createContext<AuthContextData>({
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [isTeacher, setIsTeacher] = useState(false);
+  const [user, setUser] = useState<any>(null);
 
   const handleWriteSession = async (session: { user: any }) => {
     const { user } = session;
@@ -39,20 +32,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       username: user.username,
       permissionType: user.permission_type,
     };
-
-    if (user) {
-      await AsyncStorage.setItem("permissionType", `${user.permission_type}`);
-      await AsyncStorage.setItem("username", `${user.username}`);
-      await AsyncStorage.setItem("userId", `${user.id}`);
-    }
+    await AsyncStorage.setItem("permissionType", `${newUser.permissionType}`);
+    await AsyncStorage.setItem("username", `${newUser.username}`);
+    await AsyncStorage.setItem("userId", `${newUser.id}`);
   };
 
   const sessionData = async () => {
-    const username = await AsyncStorage.getItem("username");
-    const userId = await AsyncStorage.getItem("userId");
     const permissionType = await AsyncStorage.getItem("permissionType");
     setIsTeacher(!!permissionType && permissionType?.toString() === "1");
-    return { username, userId };
   };
 
   const clearSession = async () => {
@@ -63,7 +50,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <AuthContext.Provider
-      value={{ handleWriteSession, sessionData, isTeacher, clearSession }}
+      value={{ handleWriteSession, isTeacher, clearSession }}
     >
       {children}
     </AuthContext.Provider>

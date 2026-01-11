@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1074412737824",
+    "project_id": "blog-aulas",
+    "storage_bucket": "blog-aulas.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1074412737824:android:18ae3043c65f99a7e33345",
+        "android_client_info": {
+          "package_name": "com.blogaulas"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBes-61BLT4nG0f7HSL8Wz4Nyfx5AtPZ9s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

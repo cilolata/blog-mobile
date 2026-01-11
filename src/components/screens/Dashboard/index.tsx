@@ -1,7 +1,7 @@
-import { IPost } from "@/interfaces";
-import { getAllPosts, searchPost } from "@/services";
+import usePosts from "@/hooks/usePosts";
+import { useAuthContext } from "@/context/AuthContext";
 import { useNavigation } from "expo-router";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import {
   View,
   FlatList,
@@ -11,49 +11,56 @@ import {
 } from "react-native";
 import { Button, Card, Icon } from "react-native-elements";
 import { SafeAreaView } from "react-native-safe-area-context";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useGenericContext } from "@/context/GenericContext";
 
 export function Dashboard() {
-  const [loading, setLoading] = useState(false);
-  const [posts, setPosts] = useState<IPost[]>([]);
-  const [page, setPage] = useState(1);
-  const [hasMore, setHasMore] = useState(true);
-
+  const [id, setId] = useState<number | null>();
   const navigation = useNavigation<any>();
 
-  const loadingMore = async (value: number) => {
-    setLoading(true);
-    const { data, status, error } = await getAllPosts({ page: value });
-    setPage((prev) => prev + 1);
-    if (data.posts && status === 200) {
-      setLoading(false);
-      setPosts([...posts, ...data.posts]);
-    }
-
-    if (error || status !== 200 || data.posts.length === 0) {
-      setLoading(false);
-      setHasMore(false);
-    }
-  };
+  const { posts, loading, page, hasMore, loadingMorePosts } = useGenericContext();
 
   useEffect(() => {
-    const firstFetch = async () => {
-      await loadingMore(page);
+    const fetchUser = async () => {
+      const userId = await AsyncStorage.getItem("userId");
+      await loadingMorePosts(1);
+      
+      if (userId) {
+        setId(+userId);
+      }
     };
-    firstFetch();
+    fetchUser();
   }, []);
 
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.title}>Minhas as aulas</Text>
+      <Button
+        icon={<Icon name="add-circle-outline" color="#ffffff" />}
+        onPress={() => {
+          navigation.navigate("FormPost", {
+            userId: id,
+          });
+        }}
+        buttonStyle={{
+          backgroundColor: "#841584",
+          borderRadius: 8,
+          gap: 8,
+          padding: 4,
+        }}
+        title="Criar Aula"
+      />
       <FlatList
-        data={posts}
+        data={posts.filter((item) => +item.user_id === id)}
         numColumns={1}
         ItemSeparatorComponent={() => <View style={{ height: 24 }} />}
-        keyExtractor={(item) => (item?.id ? item?.id?.toString() : "")}
+        keyExtractor={(item, index) =>
+          item?.id ? `${item.id}-${item.title}-${index}` : ""
+        }
         onEndReachedThreshold={0.5}
         onEndReached={async () => {
           if (hasMore) {
-            await loadingMore(page);
+            await loadingMorePosts(page);
           }
         }}
         ListFooterComponent={
@@ -61,8 +68,8 @@ export function Dashboard() {
             <ActivityIndicator style={{ marginVertical: 32 }} size="large" />
           ) : null
         }
-        renderItem={({ item }) => (
-          <View key={item.id} style={styles.cards}>
+        renderItem={({ item, index }) => (
+          <View key={`${item.id}-${item.title}-${index}`} style={styles.cards}>
             <Card.Title>{item.title.toUpperCase()}</Card.Title>
             <Text style={{ paddingVertical: 4 }}>{item.description}</Text>
             <View>
@@ -89,6 +96,7 @@ export function Dashboard() {
               onPress={() => {
                 navigation.navigate("SinglePost", {
                   item,
+                  userId: id,
                 });
               }}
               buttonStyle={{
