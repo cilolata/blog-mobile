@@ -5,9 +5,11 @@ Um aplicativo desenvolvido em React Native (Expo) para gerenciar aulas, usuário
 🚀 <h2>Funcionalidades</h2>
 
 👤 <b>Autenticação</b>
+
 Login/Cadastro: Tela única para login e registro de novos usuários.
 
 🧑‍🏫  <b>Área do Professor (Exclusiva)</b>
+
 FormPost: Formulário para criação de novas aulas.
 
 Dashboard: Listagem de todas as aulas criadas pelo professor.
@@ -17,6 +19,7 @@ ProfileScreen: Lista de usuários (alunos e professores).
 EditProfile: Edição de perfis (professores podem editar qualquer usuário; alunos só o próprio).
 
 👨‍🎓  <b>Área do Aluno </b>
+
 Home (PostList): Listagem de todas as aulas disponíveis.
 
 SinglePost: Página detalhada de uma aula selecionada.
@@ -24,6 +27,7 @@ SinglePost: Página detalhada de uma aula selecionada.
 EditProfile: Edição apenas do próprio perfil.
 
 🗂  <b>Navegação </b>
+
 Tabs: Sistema de abas para organização das telas principais.
 
 <h2>🏗  Arquitetura e Contextos </h2>
