@@ -1,5 +1,11 @@
 import { HTTPResponseStatus, IPost } from "@/interfaces";
-import { getAllPosts, postNewPost, putPost, searchPost } from "@/services/posts";
+import {
+  deletePostById,
+  getAllPosts,
+  postNewPost,
+  putPost,
+  searchPost,
+} from "@/services/posts";
 import { removeDuplicates } from "@/utils";
 import { useEffect, useState } from "react";
 
@@ -14,11 +20,10 @@ const usePosts = () => {
     setLoading(true);
     const { data, status, error } = await getAllPosts({ page: value });
     setPage((prev) => prev + 1);
-    if (error || status !== HTTPResponseStatus.OK || data.posts.length === 0) {
+    if (error || status !== HTTPResponseStatus.OK || !data.posts.length || data.posts.length === 0) {
       setLoading(false);
       setHasMore(false);
     }
-    console.log(data.posts);
     if (data.posts && status === HTTPResponseStatus.OK) {
       setLoading(false);
       setPosts((prev) => removeDuplicates([...prev, ...data.posts]));
@@ -60,6 +65,19 @@ const usePosts = () => {
     }
   };
 
+  const deletePost = async (id?: number | string) => {
+    try {
+      if (!id) return;
+      setPosts([])
+      const response = await deletePostById(id);
+      if (response?.status === HTTPResponseStatus.OK) {
+        await loadingMorePosts(1);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
     const firstFetch = async () => {
       await loadingMorePosts(page);
@@ -77,6 +95,7 @@ const usePosts = () => {
     value,
     createPost,
     editPost,
+    deletePost,
   };
 };
 

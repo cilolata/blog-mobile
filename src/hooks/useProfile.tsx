@@ -59,7 +59,7 @@ const useProfiles = () => {
 
   useEffect(() => {
     const firstFetch = async () => {
-      await loadingMoreProfiles(1);
+      await loadingMoreProfiles(pageListProfiles);
     };
     firstFetch();
   }, []);

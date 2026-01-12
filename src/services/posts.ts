@@ -8,7 +8,7 @@ export const getAllPosts = async ({ page }: { page: number }): Promise<any> => {
           "Content-Type": "application/json",
           "Access-Control-Allow-Origin": "*",
         },
-      },
+      }
     );
 
     if (!response.ok) {
@@ -32,7 +32,7 @@ export const getPostById = async (id?: number | string) => {
           "Content-Type": "application/json",
           "Access-Control-Allow-Origin": "*",
         },
-      },
+      }
     );
 
     if (!response.ok) {
@@ -56,7 +56,7 @@ export const searchPost = async (search?: string) => {
           "Content-Type": "application/json",
           "Access-Control-Allow-Origin": "*",
         },
-      },
+      }
     );
 
     if (!response.ok) {
@@ -80,9 +80,6 @@ export const postNewPost = async (data: any) => {
       },
       body: JSON.stringify(data),
     });
-
-    console.log(response.json())
-
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
@@ -102,7 +99,7 @@ export const putPost = async (postId: any, data: any) => {
           "Access-Control-Allow-Origin": "*",
         },
         body: JSON.stringify(data),
-      },
+      }
     );
 
     if (!response.ok) {
@@ -115,7 +112,7 @@ export const putPost = async (postId: any, data: any) => {
   }
 };
 
-export const deletePost = async (id: any) => {
+export const deletePostById = async (id: any): Promise<any> => {
   try {
     const response = await fetch(
       `https://postai-latest.onrender.com/posts/${id}`,
@@ -125,12 +122,15 @@ export const deletePost = async (id: any) => {
           "Content-Type": "application/json",
           "Access-Control-Allow-Origin": "*",
         },
-      },
+      }
     );
 
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
+
+    const data = await response.json();
+    return {status: data.status ?? 200}
   } catch (error) {
     throw error;
   }
@@ -165,7 +165,7 @@ export const getRegister = async (newUser: any) => {
           "Access-Control-Allow-Origin": "*",
         },
         body: JSON.stringify(newUser),
-      },
+      }
     );
 
     const data = await response.json();

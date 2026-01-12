@@ -26,6 +26,7 @@ export function PostList() {
     loadingMorePosts,
     updateSearch,
     value,
+    deletePost
   } = useGenericContext();
 
   const handleRelaod = useCallback(async () => {
@@ -47,6 +48,11 @@ export function PostList() {
         placeholder="Pesquisar..."
         value={value}
       />
+      {!posts && posts?.lenght < 0 && (
+        <Text style={{ marginVertical: 16 }}>
+          Sem aulas postadas no momento
+        </Text>
+      )}
       <FlatList
       refreshControl={
         <RefreshControl refreshing={refresh} onRefresh={handleRelaod} />
@@ -80,7 +86,7 @@ export function PostList() {
                 Matéria: {item.subject ?? "Não informada"}
               </Text>
               <Text style={{ fontWeight: "bold" }}>
-                Data da postagem:{" "}
+                Data da postagem:
                 {item?.created_at
                   ? new Date(item.created_at).toLocaleDateString("pt-BR", {
                       day: "2-digit",

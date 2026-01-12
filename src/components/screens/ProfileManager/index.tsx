@@ -1,3 +1,4 @@
+import { useAuthContext } from "@/context/AuthContext";
 import { GenericProvider, useGenericContext } from "@/context/GenericContext";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import React, { useCallback } from "react";
@@ -11,21 +12,27 @@ import {
 } from "react-native";
 import { Icon, Button, Card } from "react-native-elements";
 
-export function ProfileList() {
+export function ProfileManager() {
   const [refresh, setRefresh] = React.useState<any>();
   const navigation = useNavigation<NavigationProp<any>>();
-  const {  
+  const {
     profiles,
     loadingProfiles,
     pageListProfiles,
     hasMoreProfiles,
     loadingMoreProfiles,
     deleteUser,
-  } =
-  useGenericContext();
+  } = useGenericContext();
+
+  const { user, clearSession } = useAuthContext();
 
   const handleDelete = async (id?: string | number) => {
     await deleteUser(id);
+
+    if (user?.id === id) {
+      clearSession();
+      navigation.navigate("Login");
+    }
   };
 
   const handleRelaod = useCallback(async () => {

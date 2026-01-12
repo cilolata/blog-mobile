@@ -7,57 +7,96 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Tabs } from "./Tabs";
 import React from "react";
 import { Button } from "react-native-elements";
+import { useAuthContext } from "@/context/AuthContext";
+import { TouchableOpacity, Text } from "react-native";
 
 const Stack = createNativeStackNavigator();
 
 export default function AppNavigator() {
-  //   const { user } = useAuth(); // Supondo que seu AuthProvider tenha um estado de usuário
-
+  const { isSignIn, isTeacher, clearSession, user } = useAuthContext();
   return (
     <NavigationIndependentTree>
-      <Stack.Navigator initialRouteName="Login">
-        <Stack.Screen name="Login" component={Login} />
+      <Stack.Navigator
+        initialRouteName="Login"
+        screenOptions={({ navigation, route }) => ({
+          title: route.name.includes("Login")
+            ? "Login"
+            : "Olá, " + (user?.name || "Usuário"),
+          headerRight: () => {
+            if (route.name === "Login" && !isSignIn) return null;
+            return (
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate("Login")
+                  clearSession();
+
+                }}
+                style={{ marginRight: 15, padding: 5 }}
+              >
+                <Text style={{ color: "red", fontWeight: "bold" }}>Sair</Text>
+              </TouchableOpacity>
+            );
+          },
+        })}
+      >
         <Stack.Screen
-          name="Home"
-          component={Tabs}
-          options={{ headerShown: false }}
+          name="Login"
+          component={Login}
+          options={{ headerBackVisible: false }}
         />
-        <Stack.Screen
-          options={{ title: "Formulário" }}
-          name="FormPost"
-          component={FormPost}
-        />
-        <Stack.Screen
-          options={({ navigation, route }) => ({
-            title: "Aula",
-            headerBackTitle: "Voltar",
-            headerLeft: () => {
-              const prevRoute = route?.params as Record<string, unknown>;
-              return (
-                <Button
-                  iconRight
-                  icon={{ name: "arrow-back" }}
-                  onPress={() => {
-                    if (prevRoute?.origin && prevRoute.origin === "FormPost") {
-                      navigation.navigate("Home", {
-                        screen: "Dashboard",
-                      });
-                    } else {
-                      navigation.goBack();
-                    }
-                  }}
-                />
-              );
-            },
-          })}
-          name="SinglePost"
-          component={SinglePost}
-        />
-        <Stack.Screen
-          name="EditProfile"
-          component={EditProfile}
-          options={{ title: "Editar usuário" }}
-        />
+        <>
+          <Stack.Screen
+            name="Home"
+            component={Tabs}
+            options={{ title: "Blog de aulas", headerBackVisible: false }}
+          />
+          {isTeacher && (
+            <>
+              <Stack.Screen
+                name="FormPost"
+                component={FormPost}
+                options={{ title: "Blog de aulas", headerBackVisible: false }}
+              />
+              <Stack.Screen
+                name="EditProfile"
+                component={EditProfile}
+                options={{ title: "Editar usuário", headerBackVisible: false }}
+              />
+            </>
+          )}
+          <>
+            <Stack.Screen
+              name="SinglePost"
+              component={SinglePost}
+              options={({ navigation, route }) => ({
+                headerBackTitle: "Voltar",
+                headerLeft: () => {
+                  const prevRoute = route?.params as Record<string, unknown>;
+                  return (
+                    <Button
+                      type="clear"
+                      iconRight
+                      icon={{ name: "arrow-back" }}
+                      onPress={() => {
+                        if (
+                          prevRoute?.origin &&
+                          prevRoute.origin === "FormPost" &&
+                          isTeacher
+                        ) {
+                          navigation.navigate("Home", {
+                            screen: "Dashboard",
+                          });
+                        } else {
+                          navigation.goBack();
+                        }
+                      }}
+                    />
+                  );
+                },
+              })}
+            />
+          </>
+        </>
       </Stack.Navigator>
     </NavigationIndependentTree>
   );

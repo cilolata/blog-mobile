@@ -8,12 +8,14 @@ import { Controller, useForm } from "react-hook-form";
 import { StyleSheet, Text, TextInput, View } from "react-native";
 import { Button } from "react-native-elements";
 import { SafeAreaView } from "react-native-safe-area-context";
+import Toast from "react-native-toast-message";
 
 export function Login() {
   const navigation = useNavigation<NavigationProp<any>>();
   const [isRegister, setIsRegister] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [erroMessage, setErrorMessage] = useState<string>("");
+  const [showPassword, setShowPassword] = useState<boolean>(true);
 
   const { handleWriteSession } = useAuthContext();
 
@@ -23,7 +25,13 @@ export function Login() {
     setValue,
     reset,
     formState: { errors },
-  } = useForm({
+  } = useForm<{
+    id?: number;
+    username: string;
+    email: string;
+    password: string;
+    permissionType: number;
+  }>({
     defaultValues: {
       username: "",
       password: "",
@@ -31,7 +39,6 @@ export function Login() {
       permissionType: 0,
     },
   });
-
 
   const onSubmit = async (data: any) => {
     setIsLoading(true);
@@ -44,6 +51,12 @@ export function Login() {
       if (response.status === HTTPResponseStatus.CREATED && isRegister) {
         setIsLoading(false);
         setIsRegister(false);
+        Toast.show({
+          type: "success",
+          position: "bottom",
+          text1: "Perfil criado com sucesso! Faça login para continuar.",
+          visibilityTime: 4000,
+        });
       }
 
       if (response.status === HTTPResponseStatus.OK) {
@@ -51,14 +64,26 @@ export function Login() {
         setIsLoading(false);
         handleWriteSession(response.data);
         setErrorMessage("");
-        reset()
+        reset();
       }
 
       if (response.status === HTTPResponseStatus.NOT_FOUND) {
         setErrorMessage(response?.data?.message);
+        Toast.show({
+          type: "error",
+          position: "bottom",
+          text1: "Usuário não encontrado",
+          visibilityTime: 4000,
+        });
         throw Error();
       }
     } catch (error) {
+      Toast.show({
+        type: "error",
+        position: "bottom",
+        text1: "Erro ao processar sua requisição.",
+        visibilityTime: 4000,
+      });
       setIsLoading(false);
       console.log(error);
     }
@@ -77,13 +102,20 @@ export function Login() {
             }}
             control={control}
             render={({ field }) => (
-              <TextInput
-                {...field}
-                accessibilityLabel="input-username"
-                accessibilityLabelledBy="formLabel-username"
-                style={styles.input}
-                onChangeText={field.onChange}
-              />
+              <>
+                <TextInput
+                  {...field}
+                  accessibilityLabel="input-username"
+                  accessibilityLabelledBy="formLabel-username"
+                  style={styles.input}
+                  onChangeText={field.onChange}
+                />
+                {errors.username && (
+                  <Text style={{ color: "red" }}>
+                    {errors?.username.message}
+                  </Text>
+                )}
+              </>
             )}
           />
         </View>
@@ -100,13 +132,18 @@ export function Login() {
             }}
             control={control}
             render={({ field }) => (
-              <TextInput
-                {...field}
-                accessibilityLabel="input-email"
-                accessibilityLabelledBy="formLabel-email"
-                style={styles.input}
-                onChangeText={field.onChange}
-              />
+              <>
+                <TextInput
+                  {...field}
+                  accessibilityLabel="input-email"
+                  accessibilityLabelledBy="formLabel-email"
+                  style={styles.input}
+                  onChangeText={field.onChange}
+                />
+                {errors.email && (
+                  <Text style={{ color: "red" }}>{errors?.email.message}</Text>
+                )}
+              </>
             )}
           />
         </View>
@@ -119,13 +156,41 @@ export function Login() {
             }}
             control={control}
             render={({ field }) => (
-              <TextInput
-                {...field}
-                accessibilityLabel="input-password"
-                accessibilityLabelledBy="formLabel-password"
-                style={styles.input}
-                onChangeText={field.onChange}
-              />
+              <>
+                <View>
+                  <TextInput
+                    {...field}
+                    style={styles.input}
+                    secureTextEntry={showPassword}
+                    textContentType="password"
+                    accessibilityLabel="input-password"
+                    accessibilityLabelledBy="formLabel-password"
+                    onChangeText={field.onChange}
+                  />
+                  <View style={{ alignItems: "flex-start", width: "100%" }}>
+                    <Button
+                      onPress={() => setShowPassword(!showPassword)}
+                      icon={
+                        showPassword
+                          ? {
+                              name: "eye-off",
+                              type: "feather",
+                              color: "#000000",
+                            }
+                          : { name: "eye", type: "feather", color: "#000000" }
+                      }
+                      type="clear"
+                      title=""
+                      titleStyle={{ color: "#000000", fontSize: 12 }}
+                    />
+                  </View>
+                </View>
+                {errors.password && (
+                  <Text style={{ color: "red" }}>
+                    {errors?.password.message}
+                  </Text>
+                )}
+              </>
             )}
           />
         </View>
@@ -162,8 +227,8 @@ export function Login() {
             isLoading
               ? "Carregando..."
               : isRegister && !isLoading
-                ? "Enviar"
-                : "Entrar"
+              ? "Enviar"
+              : "Entrar"
           }
           buttonStyle={{
             backgroundColor: "#841584",
@@ -179,8 +244,14 @@ export function Login() {
             textAlign: "center",
           }}
         >
-          Não possue uma conta?{" "}
-          <Text onPress={() => setIsRegister(true)}>Cadastre-se</Text>
+          {" "}
+          {isRegister ? "Voltar para o " : "Não possue uma conta?"}
+          <Text
+            style={{ color: "blue" }}
+            onPress={() => setIsRegister(!isRegister)}
+          >
+            {isRegister ? "Login" : "  Cadastre-se"}
+          </Text>
         </Text>
       </SafeAreaView>
     </>

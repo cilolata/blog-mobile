@@ -1,5 +1,3 @@
-import usePosts from "@/hooks/usePosts";
-import { useAuthContext } from "@/context/AuthContext";
 import { useNavigation } from "expo-router";
 import React, { useState, useEffect, useMemo } from "react";
 import {
@@ -18,13 +16,18 @@ export function Dashboard() {
   const [id, setId] = useState<number | null>();
   const navigation = useNavigation<any>();
 
-  const { posts, loading, page, hasMore, loadingMorePosts } = useGenericContext();
+  const { posts, loading, page, hasMore, loadingMorePosts, deletePost } =
+    useGenericContext();
+
+  const handleDelete = async (id?: string | number) => {
+    await deletePost(id);
+  };
 
   useEffect(() => {
     const fetchUser = async () => {
       const userId = await AsyncStorage.getItem("userId");
       await loadingMorePosts(1);
-      
+
       if (userId) {
         setId(+userId);
       }
@@ -34,24 +37,28 @@ export function Dashboard() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>Minhas as aulas</Text>
       <Button
-        icon={<Icon name="add-circle-outline" color="#ffffff" />}
+        titleStyle={{ color: "#fff", fontWeight: "bold" }}
+        buttonStyle={{
+          cursor: "pointer",
+          alignSelf: "flex-end",
+          borderRadius: 8,
+        }}
         onPress={() => {
           navigation.navigate("FormPost", {
             userId: id,
           });
         }}
-        buttonStyle={{
-          backgroundColor: "#841584",
-          borderRadius: 8,
-          gap: 8,
-          padding: 4,
-        }}
-        title="Criar Aula"
+        title="Criar nova Aula"
       />
+      <Text style={styles.title}>Minhas as aulas</Text>
+      {!posts?.find((item: any) => +item.user_id === id) && (
+        <Text style={{ marginVertical: 16 }}>
+          Sem aulas postadas no momento
+        </Text>
+      )}
       <FlatList
-        data={posts.filter((item) => +item.user_id === id)}
+        data={posts.filter((item: any) => +item.user_id === id)}
         numColumns={1}
         ItemSeparatorComponent={() => <View style={{ height: 24 }} />}
         keyExtractor={(item, index) =>
@@ -91,22 +98,37 @@ export function Dashboard() {
               </Text>
             </View>
             <Card.Divider />
-            <Button
-              icon={<Icon name="add-circle-outline" color="#ffffff" />}
-              onPress={() => {
-                navigation.navigate("SinglePost", {
-                  item,
-                  userId: id,
-                });
-              }}
-              buttonStyle={{
-                backgroundColor: "#841584",
-                borderRadius: 8,
-                gap: 8,
-                padding: 4,
-              }}
-              title="Ver mais"
-            />
+            <View style={styles.containerButtons}>
+              <Button
+                type="clear"
+                icon={<Icon name="add-circle-outline" color="#151212" />}
+                onPress={() => {
+                  navigation.navigate("SinglePost", {
+                    item,
+                    userId: id,
+                  });
+                }}
+                titleStyle={{ color: "#151212" }}
+                buttonStyle={{
+                  borderRadius: 8,
+                  gap: 8,
+                  padding: 4,
+                }}
+                title="Ver mais"
+              />
+              <Button
+                type="clear"
+                icon={<Icon name="delete" color="#841515" />}
+                onPress={async () => await handleDelete(item.id)}
+                titleStyle={{ color: "#841515" }}
+                buttonStyle={{
+                  borderRadius: 8,
+                  gap: 8,
+                  padding: 4,
+                }}
+                title="Deletar Post"
+              />
+            </View>
           </View>
         )}
       />
@@ -134,5 +156,10 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     padding: 16,
     backgroundColor: "#fff",
+  },
+  containerButtons: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
 });

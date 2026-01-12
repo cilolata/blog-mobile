@@ -6,8 +6,11 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Controller, useForm } from "react-hook-form";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useGenericContext } from "@/context/GenericContext";
+import Toast from "react-native-toast-message";
 
-export function FormPost({ route }) {
+import { RouteProp } from '@react-navigation/native';
+
+export function FormPost({ route }: { route: RouteProp<any, any> }) {
   const navigation = useNavigation<NavigationProp<any>>();
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -15,13 +18,18 @@ export function FormPost({ route }) {
 
   const { editPost, createPost } = useGenericContext();
 
-  const { control, reset, handleSubmit } = useForm<{
+  const {
+    control,
+    reset,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<{
     title: string;
     description: string;
     content: string;
     subject: string;
   }>({
-    defaultValues: route.params.post
+    defaultValues: route?.params?.post,
   });
 
   const onSubmit = async (data: any) => {
@@ -29,27 +37,47 @@ export function FormPost({ route }) {
     try {
       await editPost(data);
       setIsLoading(false);
-      navigation.navigate('SinglePost', {
-       item: data,
-       origin: 'FormPost'
+      Toast.show({
+        type: "success",
+        text1: "Post editado com sucesso!",
+        visibilityTime: 4000,
+        position: "bottom",
       });
-      reset()
+      navigation.navigate("SinglePost", {
+        item: data,
+        origin: "FormPost",
+      });
+      reset();
     } catch {
+      Toast.show({
+        type: "error",
+        text1: "Erro ao editar o post.",
+        position: "bottom",
+        visibilityTime: 4000,
+      });
       setIsLoading(false);
     }
   };
-
-
 
   const onSubmitCreate = async (data: any) => {
     setIsLoadingCreate(true);
     try {
       const userId = await AsyncStorage.getItem("userId");
-      if(!userId) return
-      await createPost({user_id: +userId, ...data});
+      if (!userId) return;
+      await createPost({ user_id: +userId, ...data });
+      Toast.show({
+        type: "success",
+        text1: "Post criado com sucesso!",
+        visibilityTime: 4000,
+      });
       navigation.goBack();
-      reset()
+      reset();
     } catch {
+      Toast.show({
+        type: "error",
+        text1: "Erro ao criar post.",
+        visibilityTime: 4000,
+      });
       setIsLoadingCreate(false);
     }
   };
@@ -64,16 +92,26 @@ export function FormPost({ route }) {
           <Text nativeID="formLabel-title">Título</Text>
           <Controller
             name="title"
+            rules={{
+              required: !route.params?.post?.id
+                ? "Título é obrigatório"
+                : false,
+            }}
             control={control}
             render={({ field }) => (
-              <TextInput
-                {...field}
-                multiline={true}
-                accessibilityLabel="input-title"
-                accessibilityLabelledBy="formLabel-title"
-                style={styles.input}
-                onChangeText={field.onChange}
-              />
+              <>
+                <TextInput
+                  {...field}
+                  multiline={true}
+                  accessibilityLabel="input-title"
+                  accessibilityLabelledBy="formLabel-title"
+                  style={styles.input}
+                  onChangeText={field.onChange}
+                />
+                {errors?.title && (
+                  <Text style={{ color: "red" }}>{errors?.title?.message}</Text>
+                )}
+              </>
             )}
           />
         </View>
@@ -81,16 +119,26 @@ export function FormPost({ route }) {
           <Text nativeID="formLabel-subject">Matéria</Text>
           <Controller
             name="subject"
+            rules={{
+              required: !route.params?.post?.id
+                ? "Matéria é obrigatório"
+                : false,
+            }}
             control={control}
             render={({ field }) => (
-              <TextInput
-                {...field}
-                multiline={true}
-                accessibilityLabel="input-subject"
-                accessibilityLabelledBy="formLabel-subject"
-                style={styles.input}
-                onChangeText={field.onChange}
-              />
+              <>
+                <TextInput
+                  {...field}
+                  multiline={true}
+                  accessibilityLabel="input-subject"
+                  accessibilityLabelledBy="formLabel-subject"
+                  style={styles.input}
+                  onChangeText={field.onChange}
+                />
+                {errors?.subject && (
+                  <Text style={{ color: "red" }}>{errors?.subject?.message}</Text>
+                )}
+              </>
             )}
           />
         </View>
@@ -98,8 +146,14 @@ export function FormPost({ route }) {
           <Text nativeID="formLabel-description">Descrição</Text>
           <Controller
             name="description"
+            rules={{
+              required: !route.params?.post?.id
+                ? "Descriçao é obrigatório"
+                : false,
+            }}
             control={control}
             render={({ field }) => (
+              <>
               <TextInput
                 {...field}
                 multiline={true}
@@ -108,6 +162,10 @@ export function FormPost({ route }) {
                 style={styles.input}
                 onChangeText={field.onChange}
               />
+              {errors?.description && (
+                <Text style={{ color: "red" }}>{errors?.description?.message}</Text>
+              )}
+            </>
             )}
           />
         </View>
@@ -115,8 +173,14 @@ export function FormPost({ route }) {
           <Text nativeID="formLabel-content">Conteúdo</Text>
           <Controller
             name="content"
+            rules={{
+              required: !route.params?.post?.id
+                ? "Conteúdo é obrigatório"
+                : false,
+            }}
             control={control}
             render={({ field }) => (
+              <>
               <TextInput
                 {...field}
                 multiline={true}
@@ -125,6 +189,10 @@ export function FormPost({ route }) {
                 style={styles.input}
                 onChangeText={field.onChange}
               />
+              {errors?.content && (
+                <Text style={{ color: "red" }}>{errors?.content?.message}</Text>
+              )}
+            </>
             )}
           />
         </View>

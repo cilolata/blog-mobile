@@ -4,6 +4,7 @@ import React from "react";
 import { ThemeProvider } from "react-native-elements";
 import AppNavigator from "./AppNavigator";
 import { GenericProvider } from "@/context/GenericContext";
+import Toast from 'react-native-toast-message';
 
 
 export function Routes() {
@@ -12,7 +13,8 @@ export function Routes() {
       <NavigationIndependentTree>
         <AuthProvider>
           <GenericProvider>
-          <AppNavigator />
+              <AppNavigator />
+              <Toast />
           </GenericProvider>
         </AuthProvider>
       </NavigationIndependentTree>
