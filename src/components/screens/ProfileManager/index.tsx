@@ -10,10 +10,11 @@ import {
   ActivityIndicator,
   RefreshControl,
 } from "react-native";
-import { Icon, Button, Card } from "react-native-elements";
+import { Icon, Button, Card, Switch } from "react-native-elements";
 
 export function ProfileManager() {
   const [refresh, setRefresh] = React.useState<any>();
+  const [isTeachersProfiles, setIsTeachersProfiles] = React.useState<number>(1);
   const navigation = useNavigation<NavigationProp<any>>();
   const {
     profiles,
@@ -41,14 +42,28 @@ export function ProfileManager() {
     setRefresh(false);
   }, []);
 
+  console.log(profiles);
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Todos os usuários</Text>
+      <View style={{ flexDirection: "row", marginVertical: 16, gap: 4 }}>
+        <Button
+          type="clear"
+          title={"Alunos"}
+          onPress={() => setIsTeachersProfiles(1)}
+        />
+        <Button
+          type="clear"
+          title={"Porfessores"}
+          onPress={() => setIsTeachersProfiles(0)}
+        />
+      </View>
       <FlatList
         refreshControl={
           <RefreshControl refreshing={refresh} onRefresh={handleRelaod} />
         }
-        data={profiles}
+        data={profiles.filter((p: any) => p.permission_type === isTeachersProfiles)}
         numColumns={1}
         ItemSeparatorComponent={() => <View style={{ height: 24 }} />}
         keyExtractor={(item, index) =>

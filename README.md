@@ -1,51 +1,122 @@
-# Welcome to your Expo app 👋
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+📱 Rotas - App de Gestão Educacional
+Um aplicativo desenvolvido em React Native (Expo) para gerenciar aulas, usuários (professores e alunos) e interações em um ambiente educacional.
 
-## Get started
+🚀 Funcionalidades
 
-1. Install dependencies
+👤 Autenticação
+Login/Cadastro: Tela única para login e registro de novos usuários.
 
-   ```bash
-   npm install
-   ```
+🧑‍🏫 Área do Professor (Exclusiva)
+FormPost: Formulário para criação de novas aulas.
 
-2. Start the app
+Dashboard: Listagem de todas as aulas criadas pelo professor.
 
-   ```bash
-   npx expo start
-   ```
+ProfileScreen: Lista de usuários (alunos e professores).
 
-In the output, you'll find options to open the app in a
+EditProfile: Edição de perfis (professores podem editar qualquer usuário; alunos só o próprio).
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+👨‍🎓 Área do Aluno
+Home (PostList): Listagem de todas as aulas disponíveis.
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+SinglePost: Página detalhada de uma aula selecionada.
 
-## Get a fresh project
+EditProfile: Edição apenas do próprio perfil.
 
-When you're ready, run:
+🗂 Navegação
+Tabs: Sistema de abas para organização das telas principais.
 
-```bash
-npm run reset-project
-```
+🏗 Arquitetura e Contextos
+🔐 AuthContext
+Gerencia o estado de autenticação do usuário (login, logout, token, etc.).
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+🔄 GenericContext
+Compartilha estados e funções dos hooks customizados:
 
-## Learn more
+usePosts: Gerencia operações relacionadas às aulas (criação, listagem, etc.).
 
-To learn more about developing your project with Expo, look at the following resources:
+useProfile: Gerencia operações relacionadas aos perfis de usuários.
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+⚙️ Configuração e Instalação
+Pré-requisitos
+Node.js (versão 18 ou superior)
 
-## Join the community
+Expo CLI instalada globalmente
 
-Join our community of developers creating universal apps.
+Passos
+Clone o repositório:
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
-# blog-mobile
+bash
+git clone <URL_DO_REPOSITORIO> 
+
+Acesse a pasta do projeto:
+
+bash
+npm install  
+
+Inicie o projeto:
+bash
+npm start  
+Use o app pelo Expo Go no celular ou emulador.
+
+📂 Estrutura de Pastas
+
+📦src
+ ┣ 📂app
+ ┃ ┗ 📜_layout.tsx
+ ┣ 📂components
+ ┃ ┣ 📂screens
+ ┃ ┃ ┣ 📂Dashboard
+ ┃ ┃ ┃ ┗ 📜index.tsx
+ ┃ ┃ ┣ 📂Home
+ ┃ ┃ ┃ ┗ 📜index.tsx
+ ┃ ┃ ┣ 📂Login
+ ┃ ┃ ┃ ┗ 📜index.tsx
+ ┃ ┃ ┗ 📂ProfileManager
+ ┃ ┃ ┃ ┗ 📜index.tsx
+ ┃ ┗ 📂shared
+ ┃ ┃ ┣ 📂EditProfile
+ ┃ ┃ ┃ ┗ 📜index.tsx
+ ┃ ┃ ┣ 📂FormtPost
+ ┃ ┃ ┃ ┗ 📜index.tsx
+ ┃ ┃ ┣ 📂PostsList
+ ┃ ┃ ┃ ┗ 📜index.tsx
+ ┃ ┃ ┗ 📂SinglePost
+ ┃ ┃ ┃ ┗ 📜index.tsx
+ ┣ 📂context
+ ┃ ┣ 📜AuthContext.tsx
+ ┃ ┗ 📜GenericContext.tsx
+ ┣ 📂hooks
+ ┃ ┣ 📜usePosts.tsx
+ ┃ ┗ 📜useProfile.tsx
+ ┣ 📂interfaces
+ ┃ ┗ 📜index.ts
+ ┣ 📂routes
+ ┃ ┣ 📂AppNavigator
+ ┃ ┃ ┣ 📜Tabs.tsx
+ ┃ ┃ ┗ 📜index.tsx
+ ┃ ┗ 📜index.tsx
+ ┣ 📂services
+ ┃ ┣ 📜posts.ts
+ ┃ ┗ 📜profiles.ts
+ ┗ 📂utils
+ ┃ ┗ 📜index.ts
+
+
+🛠 Tecnologias Utilizadas
+
+React Native (Expo)
+
+React Navigation (para navegação)
+
+Context API (gerenciamento de estado)
+
+Hooks Customizados (usePosts, useProfile)
+
+📌 Observações
+
+O app diferencia acesso de professor e aluno com base nas permissões.
+
+Professores têm controle total sobre aulas e usuários.
+
+Alunos só visualizam aulas e editam o próprio perfil.

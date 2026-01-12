@@ -48,7 +48,8 @@ export function PostList() {
         placeholder="Pesquisar..."
         value={value}
       />
-      {!posts && posts?.lenght < 0 && (
+
+       {posts?.length === 0 && (
         <Text style={{ marginVertical: 16 }}>
           Sem aulas postadas no momento
         </Text>

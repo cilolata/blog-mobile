@@ -4,11 +4,11 @@ import { FormPost } from "@/components/shared/FormtPost";
 import { SinglePost } from "@/components/shared/SinglePost";
 import { NavigationIndependentTree } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { Tabs } from "./Tabs";
 import React from "react";
 import { Button } from "react-native-elements";
 import { useAuthContext } from "@/context/AuthContext";
 import { TouchableOpacity, Text } from "react-native";
+import { Tabs } from "./Tabs";
 
 const Stack = createNativeStackNavigator();
 
@@ -19,9 +19,9 @@ export default function AppNavigator() {
       <Stack.Navigator
         initialRouteName="Login"
         screenOptions={({ navigation, route }) => ({
-          title: route.name.includes("Login")
+          title: route.name === "Login"
             ? "Login"
-            : "Olá, " + (user?.name || "Usuário"),
+            : "Olá, " + (user?.username || "Usuário"),
           headerRight: () => {
             if (route.name === "Login" && !isSignIn) return null;
             return (
@@ -60,7 +60,7 @@ export default function AppNavigator() {
               <Stack.Screen
                 name="EditProfile"
                 component={EditProfile}
-                options={{ title: "Editar usuário", headerBackVisible: false }}
+                options={{ title: "Editar usuário" }}
               />
             </>
           )}

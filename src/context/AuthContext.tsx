@@ -7,7 +7,7 @@ interface AuthContextData {
   clearSession: () => void;
   updateUser?: (updatedData: any) => void;
   isTeacher: boolean;
-  user?: { name?: string; id?: number; email?: string; password?: string };
+  user?: { username?: string; id?: number; email?: string; password?: string };
 }
 
 const defaultAuthContextData = {
@@ -21,7 +21,7 @@ const AuthContext = createContext<AuthContextData>({
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<{
-    name?: string;
+    username?: string;
     id?: number;
     email?: string;
     password?: string;
@@ -33,11 +33,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const { user } = session;
     const newUser = {
       id: user.id,
-      name: user.username,
+      username: user.username,
       email: user.email,
       password: user.password,
     };
-    await AsyncStorage.setItem("username", `${newUser.name}`);
+    await AsyncStorage.setItem("username", `${newUser.username}`);
     await AsyncStorage.setItem("email", `${newUser.email}`);
     await AsyncStorage.setItem("userId", `${newUser.id}`);
     setUser(newUser);
@@ -53,7 +53,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     await AsyncStorage.removeItem("username");
     await AsyncStorage.removeItem("userId");
     await AsyncStorage.removeItem("token");
-    setUser({ name: "", id: undefined, email: "", password: "" });
+    setUser({ username: "", id: undefined, email: "", password: "" });
     setIsSignIn(false);
   };
 
