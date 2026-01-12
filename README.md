@@ -1,5 +1,5 @@
 
-📱 <h1>App de Gestão Educacional</h1>
+📱 <h2>App de Gestão Educacional</h2>
 Um aplicativo desenvolvido em React Native (Expo) para gerenciar aulas, usuários (professores e alunos) e interações em um ambiente educacional.
 
 🚀 <h2>Funcionalidades</h2>
