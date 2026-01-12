@@ -2,6 +2,11 @@
 📱 <h1>App de Gestão Educacional</h1>
 Um aplicativo desenvolvido em React Native (Expo) para gerenciar aulas, usuários (professores e alunos) e interações em um ambiente educacional.
 
+Este é o projeto 4 da pós-graduação Full Stack - FIAP. Para mim, este foi o projeto mais desafiador, pois como trabalho com ReactJs, senti algumas diferenças em relação a renderização, mundança de estado e cache da aplicação em React-native que foi a stack escolhida para desenvolver este app mobile. 
+Também senti dificuldades a principio para debuggar, pois sou acostumada com navegador, e mexer no Android Studio também foi um desafio.
+No processo acabei também refatorando algumas coisas na API, o que foi muito bom, pois tenho aprendido mais sobre backend.
+
+
 🚀 <h2>Funcionalidades</h2>
 
 👤 <b>Autenticação</b>
