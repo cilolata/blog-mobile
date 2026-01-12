@@ -42,8 +42,6 @@ export function ProfileManager() {
     setRefresh(false);
   }, []);
 
-  console.log(profiles);
-
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Todos os usuários</Text>
@@ -51,12 +49,12 @@ export function ProfileManager() {
         <Button
           type="clear"
           title={"Alunos"}
-          onPress={() => setIsTeachersProfiles(1)}
+          onPress={() => setIsTeachersProfiles(0)}
         />
         <Button
           type="clear"
           title={"Porfessores"}
-          onPress={() => setIsTeachersProfiles(0)}
+          onPress={() => setIsTeachersProfiles(1)}
         />
       </View>
       <FlatList

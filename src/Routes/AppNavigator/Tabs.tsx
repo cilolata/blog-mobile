@@ -38,7 +38,7 @@ export function Tabs() {
             options={{
               headerShown: false,
               tabBarIcon: ({ color, size }) => (
-                <Ionicons name="home-outline" size={size} color={color} />
+                <Ionicons name="archive-outline" size={size} color={color} />
               ),
             }}
           />
@@ -47,6 +47,7 @@ export function Tabs() {
             component={ProfileManager}
             options={{
               headerShown: false,
+              title: "Usuários",
               tabBarIcon: ({ color, size }) => (
                 <Ionicons name="person-outline" size={size} color={color} />
               ),
@@ -59,6 +60,7 @@ export function Tabs() {
             component={EditProfile}
             options={({ navigation }) => ({
               headerShown: false,
+              title: "Meu Perfil",
               tabBarIcon: ({ color, size }) => (
                 <Ionicons onPress={() => { 
                   navigation.navigate("EditProfile", { user })
