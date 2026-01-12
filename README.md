@@ -1,8 +1,8 @@
 
-📱 <h2>App de Gestão Educacional</h2>
+<h2>📱  App de Gestão Educacional</h2>
 Um aplicativo desenvolvido em React Native (Expo) para gerenciar aulas, usuários (professores e alunos) e interações em um ambiente educacional.
 
-🚀 <h2>Funcionalidades</h2>
+<h2>🚀  Funcionalidades</h2>
 
 👤 <b>Autenticação</b>
 Login/Cadastro: Tela única para login e registro de novos usuários.
@@ -26,7 +26,7 @@ EditProfile: Edição apenas do próprio perfil.
 🗂  <b>Navegação </b>
 Tabs: Sistema de abas para organização das telas principais.
 
-🏗  <b>Arquitetura e Contextos </b>
+<h2>🏗  Arquitetura e Contextos </h2>
 
 🔐 AuthContext
 Gerencia o estado de autenticação do usuário (login, logout, token, etc.).
