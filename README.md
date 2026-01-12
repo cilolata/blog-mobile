@@ -61,46 +61,48 @@ Use o app pelo Expo Go no celular ou emulador.
 
 📂 Estrutura de Pastas
 
-📦src
- ┣ 📂app
- ┃ ┗ 📜_layout.tsx
- ┣ 📂components
- ┃ ┣ 📂screens
- ┃ ┃ ┣ 📂Dashboard
- ┃ ┃ ┃ ┗ 📜index.tsx
- ┃ ┃ ┣ 📂Home
- ┃ ┃ ┃ ┗ 📜index.tsx
- ┃ ┃ ┣ 📂Login
- ┃ ┃ ┃ ┗ 📜index.tsx
- ┃ ┃ ┗ 📂ProfileManager
- ┃ ┃ ┃ ┗ 📜index.tsx
- ┃ ┗ 📂shared
- ┃ ┃ ┣ 📂EditProfile
- ┃ ┃ ┃ ┗ 📜index.tsx
- ┃ ┃ ┣ 📂FormtPost
- ┃ ┃ ┃ ┗ 📜index.tsx
- ┃ ┃ ┣ 📂PostsList
- ┃ ┃ ┃ ┗ 📜index.tsx
- ┃ ┃ ┗ 📂SinglePost
- ┃ ┃ ┃ ┗ 📜index.tsx
- ┣ 📂context
- ┃ ┣ 📜AuthContext.tsx
- ┃ ┗ 📜GenericContext.tsx
- ┣ 📂hooks
- ┃ ┣ 📜usePosts.tsx
- ┃ ┗ 📜useProfile.tsx
- ┣ 📂interfaces
- ┃ ┗ 📜index.ts
- ┣ 📂routes
- ┃ ┣ 📂AppNavigator
- ┃ ┃ ┣ 📜Tabs.tsx
- ┃ ┃ ┗ 📜index.tsx
- ┃ ┗ 📜index.tsx
- ┣ 📂services
- ┃ ┣ 📜posts.ts
- ┃ ┗ 📜profiles.ts
- ┗ 📂utils
- ┃ ┗ 📜index.ts
+<pre>
+src/
+├── 📁 app/
+│   ›└── _layout.tsx
+├── 📁 components/
+│   ├── 📁 screens/
+│   │   ├── 📁 Dashboard/
+│   │   │   └── index.tsx
+│   │   ├── 📁 Home/
+│   │   │   └── index.tsx
+│   │   ├── 📁 Login/
+│   │   │   └── index.tsx
+│   │   └── 📁 ProfileManager/
+│   │       └── index.tsx
+│   └── 📁 shared/
+│       ├── 📁 EditProfile/
+│       │   └── index.tsx
+│       ├── 📁 FormPost/
+│       │   └── index.tsx
+│       ├── 📁 PostsList/
+│       │   └── index.tsx
+│       └── 📁 SinglePost/
+│           └── index.tsx
+├── 📁 context/
+│   ├── AuthContext.tsx
+│   └── GenericContext.tsx
+├── 📁 hooks/
+│   ├── usePosts.tsx
+│   └── useProfile.tsx
+├── 📁 interfaces/
+│   └── index.ts
+├── 📁 routes/
+│   ├── 📁 AppNavigator/
+│   │   ├── Tabs.tsx
+│   │   └── index.tsx
+│   └── index.tsx
+├── 📁 services/
+│   ├── posts.ts
+│   └── profiles.ts
+└── 📁 utils/
+    └── index.ts
+</pre>
 
 
 🛠 Tecnologias Utilizadas
