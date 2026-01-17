@@ -13,7 +13,7 @@ export const GenericProvider: React.FC<{ children: React.ReactNode }> = ({ child
       ...profiles,
       ...posts,
     }),
-    [posts]
+    [posts, profiles]
   );
 
   return (
